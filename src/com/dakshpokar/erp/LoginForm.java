@@ -88,7 +88,7 @@ public class LoginForm {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(JDBC_DRIVER);
 			System.out.println("Connecting to Database....");
 			conn = DriverManager.getConnection(DB_URL, USER, PASS);
 			System.out.println("Creating statement");
