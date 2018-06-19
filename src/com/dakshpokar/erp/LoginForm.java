@@ -10,12 +10,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.*;
 
 public class LoginForm {
 
 	private JFrame frmLogin;
 	private JTextField textField;
 	private JPasswordField passwordField;
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	static final String DB_URL = "jdbc:mysql://localhost/users";
+	static final String USER = "jusername";
+	static final String PASS = "jpassword";
 
 	/**
 	 * Launch the application.
@@ -76,6 +81,57 @@ public class LoginForm {
 		});
 		btnLogin.setBounds(204, 132, 101, 34);
 		frmLogin.getContentPane().add(btnLogin);
+		connect();
+	}
+	private void connect()
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println("Connecting to Database....");
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			System.out.println("Creating statement");
+			stmt = conn.createStatement();
+			String sql;
+			sql = "SELECT id,username,password FROM users";
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()){
+		         //Retrieve by column name
+		         int id  = rs.getInt("id");
+		         String first = rs.getString("username");
+		         String last = rs.getString("password");
+
+		         //Display values
+		         System.out.print("ID: " + id);
+		         System.out.print(", First: " + first);
+		         System.out.println(", Last: " + last);
+		      }
+		}
+		catch(SQLException se)
+		{
+			se.printStackTrace();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally{
+		      //finally block used to close resources
+		      try{
+		         if(stmt!=null)
+		            stmt.close();
+		      }catch(SQLException se2){
+		      }// nothing we can do
+		      try{
+		         if(conn!=null)
+		            conn.close();
+		      }catch(SQLException se){
+		         se.printStackTrace();
+		      }//end finally try
+		   }//end try
+		   System.out.println("Goodbye!");
 	}
 
 }
