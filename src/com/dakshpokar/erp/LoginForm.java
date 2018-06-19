@@ -21,7 +21,8 @@ public class LoginForm {
 	static final String DB_URL = "jdbc:mysql://localhost/users";
 	static final String USER = "jusername";
 	static final String PASS = "jpassword";
-
+	private String username;
+	private String password;
 	/**
 	 * Launch the application.
 	 */
@@ -76,11 +77,16 @@ public class LoginForm {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				check();
 			}
 		});
 		btnLogin.setBounds(204, 132, 101, 34);
 		frmLogin.getContentPane().add(btnLogin);
+	}
+	private void check()
+	{
+		username = textField.getText();
+		password = passwordField.getText();
 		connect();
 	}
 	private void connect()
@@ -94,10 +100,20 @@ public class LoginForm {
 			System.out.println("Creating statement");
 			stmt = conn.createStatement();
 			String sql;
-			sql = "SELECT id,username,password FROM users";
+			sql = "SELECT * FROM users WHERE username = '"+username+"';";
 			ResultSet rs = stmt.executeQuery(sql);
+			rs.getRow();
+			rs.next();
+			if(password.equals(rs.getString(3)))
+			{
+				System.out.println("Successful Login");
+			}
+			else
+			{
+				System.out.println("Unsuccessful Login");
+			}
 			
-			while(rs.next()){
+			/*while(rs.next()){
 		         //Retrieve by column name
 		         int id  = rs.getInt("id");
 		         String first = rs.getString("username");
@@ -107,7 +123,8 @@ public class LoginForm {
 		         System.out.print("ID: " + id);
 		         System.out.print(", First: " + first);
 		         System.out.println(", Last: " + last);
-		      }
+		      }*/
+			
 		}
 		catch(SQLException se)
 		{
@@ -131,7 +148,6 @@ public class LoginForm {
 		         se.printStackTrace();
 		      }//end finally try
 		   }//end try
-		   System.out.println("Goodbye!");
 	}
 
 }
